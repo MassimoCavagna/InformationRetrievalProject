@@ -2,6 +2,7 @@ import spacy
 import numpy as np
 import pandas as pd
 from tqdm.notebook import tqdm
+from collections import defaultdict
 
 def filter_doc(doc, nlp, pos_list = [
                                'PROPN',
