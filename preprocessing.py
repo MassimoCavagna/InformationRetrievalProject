@@ -38,13 +38,13 @@ def filter_doc(doc, nlp, pos_list = [
   * if provided
   """
   
-  content = []
+  content = ["#S"]
   for word in nlp(doc['content']):
     if word.pos_ not in pos_list and word.text[0] != '@':
       lemma = word.lemma_.lower()
       if len(lemma) > 1: 
         content.append(lemma)
-
+  content.append("#E")
   to_return = {k:v for k,v in doc.items()}
   to_return['content'] = content
   return to_return
