@@ -1,1 +1,1 @@
-# InformationRetrievalProject
+# InsideOutProject
