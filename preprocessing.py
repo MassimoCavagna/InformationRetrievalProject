@@ -50,27 +50,28 @@ def filter_doc(doc, nlp, pos_list = [
   return to_return
 
 
-def skipgram(sequence, ws, n):
+def skipgram(sequence, ws, postfix_size):
   """
-  This function takes a sequence of words and computes the skipgrams with the given window size and n ????????????????????????
+  This function takes a sequence of words and computes the skipgrams with the given window size and postfix_size 
   Paramenters:
     sequence: the list containing the tokens that must be skipgrammed
     ws: the distance at which are looked words from the current one
-    n: the number of words saved in each n-gram minus the current token ?????????????????????????????
+    postfix_size: the number of words that will be taken in account after the window size space 
+    
   Return:
-    The list containing the list of n-grams with the skipped windows size
+    The list containing the list of n-grams with the skipped windows size, the tokens in each gram are separated by '~'
   """
   result = []
   for pos, token in enumerate(sequence, 1):
     for i in range(ws):
       start = min(pos+i, len(sequence))
-      end = min(pos+i+n, len(sequence))
-      if (end - start >= n):
+      end = min(pos+i+postfix_size, len(sequence))
+      if (end - start >= postfix_size):
         sk_gram = ( *[token], *sequence[start : end] )
         result.append("~".join(sk_gram))
   return result
 
-def compute_skip_grams(data, ws = 1, n = 1):
+def compute_skip_grams(data, ws = 1, postfix_size = 1):
   """
     This function compute the skipgram for each tweet in the dictionary 'data'. 
     
@@ -84,7 +85,7 @@ def compute_skip_grams(data, ws = 1, n = 1):
       } 
       * if provided
       ws: the distance at which are looked words from the current one
-      n: the number of words saved in each n-gram minus the current token  ?????????????????????????????
+      postfix_size: the number of words that will be taken in account after the window size space 
 
     Return:
       The skipgrammed dictionary
@@ -93,7 +94,7 @@ def compute_skip_grams(data, ws = 1, n = 1):
 
   for id, tweet in data.items():
 
-    sk_list = skipgram(tweet['content'], ws, n)
+    sk_list = skipgram(tweet['content'], ws, postfix_size)
     
     sngram_te[id] = {k: (tweet[k] if k != 'content' else sk_list) for k in tweet}
                              
@@ -119,8 +120,8 @@ def compute_tokens_frequency(data, freq: int = None):
     {
       sentiment1:
                 {
-                  token1: {freq1, *score1}
-                  token2: {freq2, *score2}
+                  token1: {freq: freq1, sentiment_score: *score1}
+                  token2: {freq: freq2, sentiment_score: *score2}
                   ...
                 }
     
