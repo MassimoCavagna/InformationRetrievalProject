@@ -40,7 +40,7 @@ def filter_doc(doc, nlp, pos_list = [
   # Create list of word tokens after removing stopwords  
   content = ["#S"]
   for word in nlp(doc['content']):
-    lexeme = nlp.vocab[word]
+    lexeme = nlp.vocab[word.text]
     if word.pos_ not in pos_list and word.text[0] != '@' and  lexeme.is_stop == False:
       lemma = word.lemma_.lower()
       if len(lemma) > 1: 
