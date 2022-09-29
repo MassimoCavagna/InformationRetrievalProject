@@ -4,18 +4,16 @@ import pandas as pd
 from tqdm.notebook import tqdm
 from collections import defaultdict
 
+
 def filter_doc(doc, nlp, pos_list = [
-                               'PROPN',
-                               'PRON',
-                               'PUNCT',
+                               'ADJ',
+                               'ADV',
+                               'AUX',
+                               'INTJ',
+                               'NOUN',
+                               'PART',
                                'SCONJ',
-                               'CCONJ',
-                               'CONJ',
-                               'DET',
-                               'NUM',
-                               'ADP',
-                               'SPACE',
-                               'SYM'
+                               'VERB',
                                ]
               ):
   
@@ -38,18 +36,17 @@ def filter_doc(doc, nlp, pos_list = [
   * if provided
   """
   # Create list of word tokens after removing stopwords  
-  content = ["#S"]
+  #content = ["#S"]
+  content = []
   for word in nlp(doc['content']):
-    lexeme = nlp.vocab[word.text]
-    if word.pos_ not in pos_list and word.text[0] != '@' and  lexeme.is_stop == False:
+    if word.pos_ in pos_list:
       lemma = word.lemma_.lower()
       if len(lemma) > 1: 
         content.append(lemma)
-  content.append("#E")
+  #content.append("#E")
   to_return = {k:v for k,v in doc.items()}
   to_return['content'] = content
   return to_return
-
 
 def skipgram(sequence, ws, postfix_size):
   """
