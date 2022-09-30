@@ -41,7 +41,7 @@ def filter_doc(doc, nlp, pos_list = [
   for word in nlp(doc['content']):
     if word.pos_ in pos_list:
       lemma = word.lemma_.lower()
-      if len(lemma) > 1: 
+      if len(lemma) > 1 and lemma != "'s": 
         content.append(lemma)
   #content.append("#E")
   to_return = {k:v for k,v in doc.items()}
@@ -220,7 +220,7 @@ def compute_tf_idf(data, freq_to_filter: int = None):
   
   return sentiment_token_tfidf.fillna(0)
 
-def tfidf_vectorize(data):
+def tfidf_vectorize(data, binary = False):
   """
   This function compute the tfidf vectorization of the corpus of documents passed by data and the related labels
   Params:
@@ -239,6 +239,11 @@ def tfidf_vectorize(data):
   """
   corpus = [" ".join(doc["content"][1:-1]) for doc in data.values()]
   y = [doc["sentiment"] for doc in data.values()]
+  
   vectorizer = TfidfVectorizer()
+  if binary:
+    vectorizer = TfidfVectorizer(binary = binary, use_idf = False, norm = False)
+    
+  
   X = vectorizer.fit_transform(corpus)
   return X, y
