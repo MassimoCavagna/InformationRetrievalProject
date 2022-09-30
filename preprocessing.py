@@ -219,3 +219,26 @@ def compute_tf_idf(data, freq_to_filter: int = None):
       sentiment_token_tfidf.loc[sentiment][token] = (d['freq'] * np.log( idf[token] + 1 )) * (d['sentiment_score'] if 'sentiment_score' in d.keys() else 1)
   
   return sentiment_token_tfidf.fillna(0)
+
+def tfidf_vectorize(data):
+  """
+  This function compute the tfidf vectorization of the corpus of documents passed by data and the related labels
+  Params:
+     data : the dictionary of docs 
+      Each doc must be in the form:
+        {
+          sentiment : doc['sentiment']
+          content: list of words
+          *sentiment_score: doc['sentiment_score']
+        }
+    * if provided
+    
+  Return:
+    - X : The matrix containing the tfidf of each document over the different features
+    - y : the list of labels
+  """
+  corpus = [" ".join(doc["content"][1:-1]) for doc in data.values()]
+  y = [doc["sentiment"] for doc in data.values()]
+  vectorizer = TfidfVectorizer()
+  X = vectorizer.fit_transform(corpus)
+  return X, y
