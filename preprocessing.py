@@ -3,6 +3,8 @@ import numpy as np
 import pandas as pd
 from tqdm.notebook import tqdm
 from collections import defaultdict
+from sklearn.feature_extraction.text import TfidfVectorizer
+
 
 
 def filter_doc(doc, nlp, pos_list = [
