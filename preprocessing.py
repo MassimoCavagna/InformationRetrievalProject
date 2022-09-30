@@ -220,6 +220,7 @@ def compute_tf_idf(data, freq_to_filter: int = None):
   
   return sentiment_token_tfidf.fillna(0)
 
+
 def tfidf_vectorize(data, binary = False):
   """
   This function compute the tfidf vectorization of the corpus of documents passed by data and the related labels
@@ -237,13 +238,17 @@ def tfidf_vectorize(data, binary = False):
     - X : The matrix containing the tfidf of each document over the different features
     - y : the list of labels
   """
-  corpus = [" ".join(doc["content"][1:-1]) for doc in data.values()]
+
+  corpus = [" ".join(doc["content"]) for doc in data.values()]
   y = [doc["sentiment"] for doc in data.values()]
+
+
+  
   
   vectorizer = TfidfVectorizer()
   if binary:
-    vectorizer = TfidfVectorizer(binary = binary, use_idf = False, norm = False)
-    
-  
+    vectorizer = TfidfVectorizer(binary = True,)
+
   X = vectorizer.fit_transform(corpus)
+
   return X, y
