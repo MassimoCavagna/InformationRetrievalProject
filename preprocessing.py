@@ -318,3 +318,11 @@ def plot_history(histories : list, title : str, same_figure = False, group_names
         sns.lineplot(data = df.iloc[int(n+1):], x = "epoch", y = k, hue = "type", palette = sns.color_palette("OrRd", len(histories)), legend = (i == (len(df.columns[0:-2])-1)))
     if (i == (len(df.columns[0:-2])-1)):  
       plt.legend(bbox_to_anchor=(1.02, 0.73), loc='upper left', borderaxespad=0)  
+
+def compute_recall(cm):
+  true_pos = np.diag(cm)
+  false_neg = np.sum(cm, axis=1) - true_pos
+
+  recall = np.sum(true_pos) / np.sum(true_pos + false_neg)
+
+  return recall
