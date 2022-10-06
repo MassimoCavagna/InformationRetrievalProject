@@ -254,3 +254,67 @@ def tfidf_vectorize(data, binary = False):
   X = vectorizer.fit_transform(corpus)
 
   return X, y, vectorizer
+
+def plot_history(histories : list, title : str, same_figure = False, group_names: list = None, figsize = (20,20)):
+  """
+  This function is used to easily plot the history returned by any model in the form of a dictionary.
+  For each metric it plots a lineplot describing the model's trend through all the epochs
+  Parameters:
+  -histories: a list of histories or a dict containing different lists of histories, one for each key
+  -title: the title of the figure
+  -same_figure: if the result must be contained in a single figure, or it must just be plotted without
+                intestation. Useful to plot multiple subplots in the same figure
+  -group_names: a list containing the name of each data in the histories dictionary (must match the lenght of histories).
+                By default it enumerates from 0 the different lines (one ofr each item in histories)
+  -figsize: the size of the resulting figure
+  Return: None
+  """
+  if same_figure:
+    fig = plt.figure(figsize = figsize)
+    fig.suptitle(title)
+
+  
+  df = pd.DataFrame()
+
+  if (group_names != None) and (len(histories) != len(group_names)):
+    raise Exception('The lenghts must be the same')
+
+  for history, i in zip(histories, group_names if group_names != None else list(range(len(histories)))):
+    if type(history) != dict:
+      history = history.history
+
+    keys, val_keys = [k for k in history.keys() if "val_" not in k], [k for k in history.keys() if "val_" in k]
+
+    data = pd.DataFrame({k : history[k] for k in keys}, columns = keys)
+    data["type"] = "T_" + str(i)
+    data["epoch"] = list(range(len(data["type"])))
+
+    val_data = pd.DataFrame({k.replace("val_", "") : history[k] for k in val_keys}, columns = keys)
+    val_data["type"] = "V_" + str(i)
+    val_data["epoch"] = list(range(len(val_data["type"])))
+
+    if df.empty:
+      df = pd.concat([data, val_data]).reset_index(drop=True)
+    else:
+      tmp = pd.concat([data, val_data]).reset_index(drop=True)
+      df = pd.concat([df, tmp]).reset_index(drop=True)
+    sns.set_style("darkgrid")
+    
+  df.sort_values(by=['type'], inplace = True)
+  df.reset_index(drop=True)
+  for i, k in enumerate(df.columns[0:-2]):
+    n, is_val_empty = ((df.shape[0]/2)-1, False) if len(df[df.type.str.contains('V', case=False)]) > 0 else (df.shape[0]-1, True)
+    plt.subplot((len(df.columns[0:-2])//3)+1, 3, 1 + i)
+    plt.title(k)
+
+    if group_names == None:
+      sns.lineplot(data = df.iloc[:int(n)], x = "epoch", y = k, hue = "type", palette = sns.color_palette(["blue"]*len(histories), len(histories)), legend = i == (len(df.columns[0:-2])-1))
+      if not is_val_empty:
+        sns.lineplot(data = df.iloc[int(n+1):], x = "epoch", y = k, hue = "type", palette = sns.color_palette(["red"]*len(histories), len(histories)), legend = i == (len(df.columns[0:-2])-1))
+    
+    else:
+      sns.lineplot(data = df.iloc[:int(n)], x = "epoch", y = k, hue = "type", palette = sns.color_palette("PuBu", len(histories)), legend = (i == (len(df.columns[0:-2])-1))) 
+      if not is_val_empty:
+        sns.lineplot(data = df.iloc[int(n+1):], x = "epoch", y = k, hue = "type", palette = sns.color_palette("OrRd", len(histories)), legend = (i == (len(df.columns[0:-2])-1)))
+    if (i == (len(df.columns[0:-2])-1)):  
+      plt.legend(bbox_to_anchor=(1.02, 0.73), loc='upper left', borderaxespad=0)  
