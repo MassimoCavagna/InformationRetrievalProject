@@ -253,4 +253,4 @@ def tfidf_vectorize(data, binary = False):
 
   X = vectorizer.fit_transform(corpus)
 
-  return X, y
+  return X, y, vectorizer
