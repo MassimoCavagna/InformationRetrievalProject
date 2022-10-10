@@ -22,6 +22,8 @@ from tensorflow.data import Dataset
 from tensorflow.keras.utils import image_dataset_from_directory
 from tensorflow.keras.preprocessing.image import load_img
 
+from sklearn.metrics.pairwise import cosine_similarity
+
 from tensorflow.keras.callbacks import History
 
 from sklearn.preprocessing import LabelBinarizer
@@ -111,7 +113,7 @@ def compute_svm_prediction(clf, X_test):
   
   return res
 
-def five_fold_cross_svm(parameters : dict, hyper_name : str, hyper_value):
+def five_fold_cross_svm(parameters : dict, hyper_name : str, hyper_value, X, y):
   """
   The function compute the Accuracy on the train and test for the specific configuration
   of a SVM
@@ -119,9 +121,12 @@ def five_fold_cross_svm(parameters : dict, hyper_name : str, hyper_value):
     parameters: a dictionary containing the configuration for the SVM
     hyper_name: the hyperparameter to which the cross validation is computed
     hyper_value: a list containing the different values of the hypervalue 
+    X: list of samples
+    y: the labels realtive to the samples
   Return:
     It prints the train and test accuracy
   """
+  kf = KFold(n_splits=5, shuffle=True)
   cclf = svm.SVC(**parameters)
   train_accuracy = []
   test_accuracy = []
@@ -157,7 +162,8 @@ def compute_recall(cm):
 
   return recall
 
-def five_fold_cross_RF(parameters : dict, hyper_name : str, hyper_value):
+def five_fold_cross_RF(parameters : dict, hyper_name : str, hyper_value, X, y):
+  
   """
   The function compute the Accuracy on the train and test for the specific configuration
   of a Random Forest
@@ -165,9 +171,12 @@ def five_fold_cross_RF(parameters : dict, hyper_name : str, hyper_value):
     parameters: a dictionary containing the configuration for the Random Forest
     hyper_name: the hyperparameter to which the cross validation is computed
     hyper_value: a list containing the different values of the hypervalue 
+    X: list of samples
+    y: the labels realtive to the samples
   Return:
     It prints the train and test accuracy
   """
+  kf = KFold(n_splits=5, shuffle=True)
   cclf = RandomForestClassifier(**parameters)
   train_accuracy = []
   test_accuracy = []
