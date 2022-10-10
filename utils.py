@@ -1,3 +1,38 @@
+from numba import cuda 
+
+from tensorflow.keras.layers import Input, Dense, Dropout, BatchNormalization, ReLU, PReLU, Concatenate, Layer, Rescaling, GaussianNoise, Resizing
+from tensorflow.keras.layers import Conv2D, MaxPool2D, AveragePooling2D, GlobalAveragePooling2D, GlobalMaxPool2D, Flatten, Reshape, InputLayer
+
+from tensorflow.keras import Sequential, layers, initializers, activations
+from tensorflow.keras.models import Model
+
+from tensorflow.keras.optimizers import Optimizer
+from tensorflow.keras.optimizers import SGD, Nadam, Adam
+
+from tensorflow.keras.losses import Loss
+from tensorflow.keras.losses import MeanSquaredError, CategoricalCrossentropy, CategoricalHinge
+
+from tensorflow.keras.metrics import Metric
+from tensorflow.keras.metrics import Accuracy, CategoricalAccuracy, TruePositives, TrueNegatives, FalsePositives, FalseNegatives, BinaryAccuracy, Precision, Recall, AUC 
+
+from tensorflow.keras.activations import tanh
+from sklearn.model_selection import KFold
+
+from tensorflow.data import Dataset
+from tensorflow.keras.utils import image_dataset_from_directory
+from tensorflow.keras.preprocessing.image import load_img
+
+from tensorflow.keras.callbacks import History
+
+from sklearn.preprocessing import LabelBinarizer
+
+import tensorflow as tf
+
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+
 def setup(data, t_size, sentiments = ["fear", "anger", "joy", "sadness"]):
   """
   The function preprocess the data and return the train and test split in order to
@@ -97,7 +132,7 @@ def five_fold_cross_svm(parameters : dict, hyper_name : str, hyper_value):
   print(f"Train accuracy: {np.round(np.mean(train_accuracy), 3)}")
   print(f"Test accuracy: {np.round(np.mean(test_accuracy), 3)} \n")
   
- def compute_recall(cm):
+def compute_recall(cm):
   """
   The function compute the recall fiven a confusion matrics
   Params:
@@ -263,7 +298,7 @@ def model_evaluation(X, y, save_path, QE):
       print("\t Test completed")
   ev_df.to_csv(save_path)
   
- def query_expansion(query: list, query_expansion_lenght, tk_tk_count: pd.DataFrame):
+def query_expansion(query: list, query_expansion_lenght, tk_tk_count: pd.DataFrame):
   """
   The function add new tokens according to the query_expansion_lenght passed and add them to the
   original query text
