@@ -168,61 +168,6 @@ def compute_tokens_frequency(data, freq: int = None):
 
   return sentiment_token_count
 
-def compute_inverse_document_frequency(tf):
-  """
-  This function computes the inverse document frequency from the frequency dictionary computed by compute_tokens_frequency
-  Parameters:
-    tf: the outcome of the compute_tokens_frequency function
-  
-  Returns:
-    the idf value for each token
-  """
-  idf_tmp = defaultdict(lambda: defaultdict(lambda: 0))
-  
-  for sentiment, docs in tf.items():
-    for token in docs:
-      idf_tmp[token][sentiment] = 1
-
-  N = len(tf.keys())
-  
-  idf = defaultdict(lambda: 1)
-
-  for token in idf_tmp:
-    idf[token] = N/(sum(idf_tmp[token].values()) + N)
-
-  return idf
-
-def compute_tf_idf(data, freq_to_filter: int = None):
-  """
-  This function combines the output of compute_tokens_frequency and compute_inverse_document_frequency to compute the tf.idf value for each token
-
-  Parameters:
-    data: the dictionary of docs 
-      Each doc must be in the form:
-        {
-          sentiment : doc['sentiment']
-          content: list of words
-          *sentiment_score: doc['sentiment_score']
-        }
-    freq_to_filter: frequency threshold under which tokens are discarded
-    * if provided
-  Returns:
-    a pd.DataFrame with tokens as columns and sentiments as index
-    each entry is the tf.idf value
-  """
-  tf = compute_tokens_frequency(data, freq_to_filter)
-  #filter_tokens_by_frequency(tf, freq_to_filter)
-  idf = compute_inverse_document_frequency( tf = tf ) 
-
-  sentiment_token_tfidf = pd.DataFrame(columns = idf.keys(), index = tf.keys(), dtype = float)
-
-  for sentiment, tokens in tf.items():
-    for token, d in tokens.items():
-      sentiment_token_tfidf.loc[sentiment][token] = (d['freq'] * np.log( idf[token] + 1 )) * (d['sentiment_score'] if 'sentiment_score' in d.keys() else 1)
-  
-  return sentiment_token_tfidf.fillna(0)
-
-
 def tfidf_vectorize(data, binary = False):
   """
   This function compute the tfidf vectorization of the corpus of documents passed by data and the related labels
@@ -243,9 +188,6 @@ def tfidf_vectorize(data, binary = False):
 
   corpus = [" ".join(doc["content"]) for doc in data.values()]
   y = [doc["sentiment"] for doc in data.values()]
-
-
-  
   
   vectorizer = TfidfVectorizer()
   if binary:
