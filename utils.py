@@ -33,6 +33,16 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+from sklearn import svm
+from sklearn.model_selection import train_test_split
+import pickle
+from sklearn import metrics
+from sklearn.model_selection import KFold
+from sklearn.ensemble import RandomForestClassifier
+from joblib import dump, load
+
+from InformationRetrievalProject.preprocessing import tfidf_vectorize
+
 def setup(data, t_size, sentiments = ["fear", "anger", "joy", "sadness"]):
   """
   The function preprocess the data and return the train and test split in order to
@@ -46,7 +56,7 @@ def setup(data, t_size, sentiments = ["fear", "anger", "joy", "sadness"]):
     y_train, y_test, y_t, lists of : lists of labels of the relative sample
   """
 
-  X, y, _ = pp.tfidf_vectorize(data)
+  X, y, _ = tfidf_vectorize(data)
 
   map = [ {s : 1 if i == pos else 0 for i, s in enumerate(sentiments)} for pos in range(len(sentiments))]
   test_map = {s : i for i, s in enumerate(sentiments)}
