@@ -349,3 +349,43 @@ def query_expansion(query: list, query_expansion_lenght, tk_tk_count: pd.DataFra
   expanded_query = list(closest_grams.max(axis = 1).sort_values(ascending=False)[:query_expansion_lenght].index)
   # print(query, expanded_query)
   return query + expanded_query
+
+def plot_ch_ch_sentiment(cc_time_sentiments, ch1, ch2):
+  """
+  This function plot the timeline of the sentiment from ch1 to ch2
+  according to the cc_time_sentiment data
+  Params:
+    cc_time_sentiments: a 2 level dict that contains for each pair of 
+                        characters the sequence sentiment from the 
+                        first in recpect to the second
+    ch1: the first character name
+    ch2: the second character name
+  Return:
+    None, it displays the time plot of the sentiment relation
+  """
+  plt.figure(figsize = (30, 8))
+  y_map = {
+      "anger" : 1, 
+      "fear" : 2, 
+      "joy" : 3, 
+      "sadness" : 4
+  }
+
+  palette = ["#5e6480"]
+  sns.set_palette(palette)
+
+  character_y = [y_map[sent] for sent in cc_time_sentiments[ch1][ch2]]
+  plt.title(ch1 + " -> " + ch2, fontsize = 25)
+  character_x = [i for i in range(len(character_y))]
+  sns.lineplot(x = character_x, y = character_y)
+
+  palette = {
+      1 : "#b50f0d", 
+      2 : "#a30bb8", 
+      3 : "#fafa00", 
+      4 : "#0226db"
+  }
+  ax = sns.scatterplot(x = character_x, y = character_y, hue = character_y, s = 150, legend = False, palette = palette)
+  ax.set_yticks(range(1, 5))
+  ax.set_yticklabels(["anger", "fear" , "joy", "sadness"], fontsize = 12)
+  plt.grid(alpha = 0.5)
