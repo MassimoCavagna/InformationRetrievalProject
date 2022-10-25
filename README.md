@@ -1,5 +1,5 @@
 # InsideOutProject
-[![Project](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1i-k7mSV3SHuH-z3C0fyH2AG2SL7tSbSI) The colab notebook containing the project
+[![Project](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1cVu6IeYReoL7ewbA4dezPPiXka1GhJvw?usp=sharing) The colab notebook containing the project
 
 The aim of this project is to develop a workflow on the dataset [emotion-detection-from-text](https://www.kaggle.com/datasets/pashupatigupta/emotion-detection-from-text) and [EmotionIntensity-SharedTask](http://saifmohammad.com/WebPages/EmotionIntensity-SharedTask.html) containing tweets categorized into sentiments.
 
